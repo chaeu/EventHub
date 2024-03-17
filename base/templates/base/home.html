@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+
+{% block content %}
+
+<h1>Home Template</h1>
+<div>
+    <a href="{% url "create-event" %}"> Create Event</a>
+    <div>
+        {% for event in events %}
+            <div>
+                <span>@{{event.host.username}}</span>
+                <h5>{{event.id}} -- <a href="{% url "event" event.id %}">{{event.name}}</a></h5>
+                <small>{{event.type.name}}</small>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+{% endblock content %}
