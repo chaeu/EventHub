@@ -3,19 +3,46 @@
 
 {% block content %}
 
-<h1>Home Template</h1>
-<div>
-    <a href="{% url "create-event" %}"> Create Event</a>
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+</style>
+<div class="home-container">
     <div>
-        {% for event in events %}
+        <h3>Browse Types</h3>
+        <hr>
+        <div>
+            <a href="{% url "home" %}">All</a>
+        </div>
+        {% for type in types %}
             <div>
-                <span>@{{event.host.username}}</span>
-                <h5>{{event.id}} -- <a href="{% url "event" event.id %}">{{event.name}}</a></h5>
-                <small>{{event.type.name}}</small>
+                <a href="{% url "home" %}?q={{type.name}}">{{type}}</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <div>
+            <h5>Number of events {{events_count}}</h5>
+            <a href="{% url "create-event" %}"> Create Event</a>
+            
+            <div>
+                {% for event in events %}
+                    <div>
+                        <a href="{% url "update-event" event.id %}">Update Event</a>
+                        <a href="{% url "delete-event" event.id %}"> Delete</a>
+                        <span>@{{event.host.username}}</span>
+                        <h5>{{event.id}} -- <a href="{% url "event" event.id %}">{{event.name}}</a></h5>
+                        <small>{{event.type.name}}</small>
+                    </div>
+
+                {% endfor %}
+
             </div>
 
-        {% endfor %}
-
+        </div>
     </div>
 
 </div>

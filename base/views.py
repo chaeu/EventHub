@@ -1,10 +1,22 @@
 from django.shortcuts import render, redirect
-from .models import Event
+from django.db.models import Q
+from .models import Event, Type
 from .forms import EventForm
 
 def home(request):
-    events = Event.objects.all()
-    context = {"events":events}
+    q = request.GET.get("q") if request.GET.get("q") != None else ""
+    events = Event.objects.filter(
+        Q(type__name__icontains=q) |
+        Q(name__icontains=q) |
+        Q(description__icontains=q)
+    )
+    types = Type.objects.all()
+    events_count = events.count()
+    context = {
+        "events":events,
+        "events_count": events_count,
+        "types": types
+        }
     return render(request, "base/home.html", context)
 
 def event(request, pk):
@@ -21,3 +33,22 @@ def createEvent(request):
             return redirect("home")
     context = {"form": form}
     return render(request, "base/event_form.html", context)
+
+def updateEvent(request, pk):
+    event = Event.objects.get(id=pk)
+    form = EventForm(instance=event)
+
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+    context = {"form": form}
+    return render(request, "base/event_form.html", context)
+
+def deleteEvent(request, pk):
+    event = Event.objects.get(id=pk)
+    if request.method == "POST":
+        event.delete()
+        return redirect("home")
+    return render(request, "base/delete.html", {"obj":event})
