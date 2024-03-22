@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from .models import Event, Type
+from .models import Event, Type, Message
 from .forms import EventForm
 
 
@@ -65,16 +65,22 @@ def home(request):
     )
     types = Type.objects.all()
     events_count = events.count()
+    user_messages = Message.objects.all().order_by("-created")[:5]
     context = {
         "events":events,
         "events_count": events_count,
-        "types": types
+        "types": types,
+        "user_messages": user_messages,
         }
     return render(request, "base/home.html", context)
 
 def event(request, pk):
     event = Event.objects.get(id=pk)
-    context = {"event":event}
+    user_messages = Message.objects.filter(event_id=pk)
+    context = {
+        "event":event,
+        "user_messages": user_messages,
+        }
     return render(request, "base/event.html", context)
 
 @login_required(login_url="login")
@@ -111,4 +117,3 @@ def deleteEvent(request, pk):
         event.delete()
         return redirect("home")
     return render(request, "base/delete.html", {"obj":event})
-

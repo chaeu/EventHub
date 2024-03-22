@@ -4,6 +4,14 @@
 
 <h1>{{event.name}}</h1>
 
+<div>
+    <h3>Event messages</h3>
+    {% for user_message in  user_messages %}
+    <div>
+        <p>@{{user_message.user}} | {{user_message.body}}</p>
+    </div>
+    {% endfor %}
 
+</div>
 
 {% endblock content %}
