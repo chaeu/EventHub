@@ -51,7 +51,8 @@
         <h3>Recent Activity</h3>
         {% for user_message in  user_messages %}
         <div>
-            <p>@{{user_message.user}} | {{user_message.body}}</p>
+            <p>@{{user_message.user}} | {{user_message.event}}</p>
+            <p>{{user_message.body}}</p>
         </div>
         {% endfor %}
 

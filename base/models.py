@@ -15,6 +15,9 @@ class Event(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     #participants = 
+    capacity = models.IntegerField(null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
+    time = models.TimeField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
