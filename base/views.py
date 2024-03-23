@@ -65,21 +65,40 @@ def home(request):
     )
     types = Type.objects.all()
     events_count = events.count()
-    user_messages = Message.objects.all().order_by("-created")[:5]
+    event_messages = Message.objects.all().order_by("-created")[:5]
     context = {
         "events":events,
         "events_count": events_count,
         "types": types,
-        "user_messages": user_messages,
+        "event_messages": event_messages,
         }
     return render(request, "base/home.html", context)
 
 def event(request, pk):
     event = Event.objects.get(id=pk)
-    user_messages = Message.objects.filter(event_id=pk)
+    participants = event.participants.all()
+    event_messages = event.message_set.all().order_by("-created")
+
+    if request.method == "POST":
+        print(list(request.POST.items()))
+        if "register" in request.POST:
+            event.participants.add(request.user)        
+            return redirect("event", pk=event.id)
+        elif "unregister" in request.POST:
+            event.participants.remove(request.user)
+            return redirect("event", pk=event.id)
+        elif "body" in request.POST:
+            message = Message.objects.create(
+                user=request.user,
+                event=event,
+                body=request.POST.get("body")
+            )        
+            return redirect("event", pk=event.id)
+
     context = {
         "event":event,
-        "user_messages": user_messages,
+        "participants":participants,
+        "event_messages": event_messages,
         }
     return render(request, "base/event.html", context)
 
@@ -117,3 +136,15 @@ def deleteEvent(request, pk):
         event.delete()
         return redirect("home")
     return render(request, "base/delete.html", {"obj":event})
+
+@login_required(login_url="login")
+def deleteMessage(request, pk):
+    message = Message.objects.get(id=pk)
+
+    if request.user != message.user:
+        return HttpResponse("You are not allowed to do that")
+    
+    if request.method == "POST":
+        message.delete()
+        return redirect("home")
+    return render(request, "base/delete.html", {"obj":message})

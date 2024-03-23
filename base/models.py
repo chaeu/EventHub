@@ -11,10 +11,11 @@ class Type(models.Model):
 class Event(models.Model):
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     guest_host = models.CharField(max_length=30, blank=True)
+    location = models.CharField(max_length=50, null=True, blank=True)
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    #participants = 
+    participants = models.ManyToManyField(User, related_name="participants", blank=True)
     capacity = models.IntegerField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)
     time = models.TimeField(null=True, blank=True)

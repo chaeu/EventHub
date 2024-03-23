@@ -11,51 +11,21 @@
 </style>
 <div class="home-container">
     <div>
-        <h3>Browse Types</h3>
-        <hr>
-        <div>
-            <a href="{% url "home" %}">All</a>
-        </div>
-        {% for type in types %}
-            <div>
-                <a href="{% url "home" %}?q={{type.name}}">{{type}}</a>
-            </div>
-        {% endfor %}
+        {% include "base/types_component.html" %}
     </div>
 
     <div>
         <div>
             <h5>Number of events {{events_count}}</h5>
             <a href="{% url "create-event" %}"> Create Event</a>
-            
-            <div>
-                {% for event in events %}
-                    <div>
-                        {% if request.user == event.host %}
-                        <a href="{% url "update-event" event.id %}">Update Event</a>
-                        <a href="{% url "delete-event" event.id %}"> Delete</a>
-                        {% endif %}
-                        <span>@{{event.host.username}}</span>
-                        <h5>{{event.id}} -- <a href="{% url "event" event.id %}">{{event.name}}</a></h5>
-                        <small>{{event.type.name}}</small>
-                    </div>
-
-                {% endfor %}
-
-            </div>
+            <hr>
+            {% include "base/events_component.html" %}
 
         </div>
     </div>
 
     <div>
-        <h3>Recent Activity</h3>
-        {% for user_message in  user_messages %}
-        <div>
-            <p>@{{user_message.user}} | {{user_message.event}}</p>
-            <p>{{user_message.body}}</p>
-        </div>
-        {% endfor %}
-
+        {% include "base/activity_component.html" %}
     </div>
 
 </div>
