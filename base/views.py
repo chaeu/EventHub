@@ -148,3 +148,22 @@ def deleteMessage(request, pk):
         message.delete()
         return redirect("home")
     return render(request, "base/delete.html", {"obj":message})
+
+#@login_required(login_url="login")
+def profilePage(request, pk):
+    user = User.objects.get(id=pk)
+    events = user.event_set.all()
+    types = Type.objects.all()
+    event_messages = user.message_set.all()
+
+    if user.id != int(pk):
+        print("different user")
+        return HttpResponse("You are not allowed here!")
+    
+    context = {
+        "user": user,
+        "events": events,
+        "types": types,
+        "event_messages": event_messages
+    }
+    return render(request, "base/profile.html", context)

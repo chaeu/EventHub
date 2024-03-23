@@ -1,7 +1,7 @@
 <h3>Recent Activity</h3>
 {% for event_message in  event_messages %}
 <div>
-    <small>{{event_message.user}} | {{event_message.created|timesince}} </small>
+    <small><a href="{% url "profile" event_message.user.id %}">{{event_message.user}}</a> | {{event_message.created|timesince}} </small>
     <small>{{event_message.event}}</small>
     <p>{{event_message}}</p>
     {% if request.user == event_message.user %}

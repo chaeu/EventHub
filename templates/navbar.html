@@ -11,4 +11,8 @@
 {% else %}
 <a href="{% url "login" %}">Login</a>
 {% endif %}
+{% if request.user.is_authenticated %}
+<a href="{% url "profile" user.id %}">ProfilePage</a>
+{% endif %}
 <hr>
+
